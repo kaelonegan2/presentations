@@ -209,6 +209,17 @@
 </div>
 
 <script>
+  (function loadSoloWidget() {
+    // Skip widget on file:// previews to avoid cross-origin frame errors.
+    if (window.location.protocol === "file:") return;
+    const script = document.createElement("script");
+    script.src = "https://solomail.io/chat/widget.js";
+    script.async = true;
+    script.dataset.identity = "investors";
+    document.body.appendChild(script);
+  })();
+</script>
+<script>
 (function(){
 
   /* ╔═══════════════════════════════════════════════════════════════════╗
