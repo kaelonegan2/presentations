@@ -197,7 +197,6 @@
     <div class="topbar-left"><div class="logo-mark">S—</div><div class="logo-text">Solo — When Cognition Becomes Cheap</div></div>
     <div class="topbar-right">
       <div class="slide-counter"><span class="current" id="counterCurrent">01</span><span> / </span><span id="counterTotal">--</span></div>
-      <button class="theme-toggle" id="chatLaunch" aria-label="Open Solo Chat">💬</button>
       <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"><span class="icon-sun">☀️</span><span class="icon-moon">🌙</span></button>
     </div>
   </div>
@@ -213,6 +212,35 @@
   window.__loadSoloWidget = function loadSoloWidget() {
     if (window.__soloWidgetLoaded) return true;
     if (window.location.protocol === "file:") return false;
+
+    function constrainWidgetSurface() {
+      const container = document.getElementById("solo-chat-widget-container");
+      const frame = document.getElementById("solo-chat-widget-iframe");
+      if (!container || !frame) return false;
+
+      // The upstream widget mounts a fullscreen iframe; constrain it to a floating chat surface.
+      container.style.setProperty("width", "min(430px, calc(100vw - 24px))", "important");
+      container.style.setProperty("height", "min(760px, calc(100vh - 24px))", "important");
+      container.style.setProperty("right", "12px", "important");
+      container.style.setProperty("bottom", "12px", "important");
+      container.style.setProperty("top", "auto", "important");
+      container.style.setProperty("left", "auto", "important");
+      container.style.setProperty("background", "transparent", "important");
+      container.style.setProperty("pointer-events", "none", "important");
+      frame.style.setProperty("pointer-events", "auto", "important");
+      return true;
+    }
+
+    const observer = new MutationObserver(() => {
+      if (constrainWidgetSurface()) observer.disconnect();
+    });
+    observer.observe(document.documentElement, { childList: true, subtree: true });
+
+    const intervalId = window.setInterval(() => {
+      if (constrainWidgetSurface()) window.clearInterval(intervalId);
+    }, 200);
+    window.setTimeout(() => window.clearInterval(intervalId), 8000);
+
     const script = document.createElement("script");
     script.src = "https://solomail.io/chat/widget.js";
     script.async = true;
@@ -224,6 +252,7 @@
     window.__soloWidgetLoaded = true;
     return true;
   };
+  window.__loadSoloWidget();
 </script>
 <script>
 (function(){
@@ -820,15 +849,6 @@
   document.getElementById('themeToggle').addEventListener('click',()=>{
     const html=document.documentElement;
     html.setAttribute('data-theme',html.getAttribute('data-theme')==='dark'?'light':'dark');
-  });
-
-  const chatLaunch = document.getElementById('chatLaunch');
-  chatLaunch.addEventListener('click', () => {
-    const loaded = window.__loadSoloWidget ? window.__loadSoloWidget() : false;
-    if (loaded) {
-      chatLaunch.textContent = '✓';
-      chatLaunch.setAttribute('aria-label', 'Solo Chat Loaded');
-    }
   });
 
 })();
