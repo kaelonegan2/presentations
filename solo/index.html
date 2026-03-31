@@ -186,8 +186,17 @@
   .nav-btn{width:40px;height:40px;background:var(--solo-surface);border:1px solid var(--solo-border);border-radius:10px;color:var(--solo-text);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;font-size:18px}
   .nav-btn:hover{background:var(--solo-accent-glow);border-color:var(--solo-accent);color:var(--solo-accent)}
   .nav-btn:active{transform:scale(.94)}
-  /* Keep Solo chat bubble clear of nav controls */
-  #solo-chat-widget-container{right:24px!important;bottom:74px!important}
+  /* Keep Solo chat bubble clear of nav controls and prevent visual bleed */
+  #solo-chat-widget-container{
+    right:24px!important;
+    bottom:74px!important;
+    background:transparent!important;
+    overflow:hidden!important;
+  }
+  #solo-chat-widget-iframe{
+    background:transparent!important;
+    display:block!important;
+  }
   @media (max-width:900px){#solo-chat-widget-container{right:16px!important;bottom:88px!important}}
   @keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
   .topbar,.bottombar{animation:fadeInUp .6s ease forwards}
