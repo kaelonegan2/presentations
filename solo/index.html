@@ -197,6 +197,7 @@
     <div class="topbar-left"><div class="logo-mark">S—</div><div class="logo-text">Solo — When Cognition Becomes Cheap</div></div>
     <div class="topbar-right">
       <div class="slide-counter"><span class="current" id="counterCurrent">01</span><span> / </span><span id="counterTotal">--</span></div>
+      <button class="theme-toggle" id="chatLaunch" aria-label="Open Solo Chat">💬</button>
       <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"><span class="icon-sun">☀️</span><span class="icon-moon">🌙</span></button>
     </div>
   </div>
@@ -209,15 +210,20 @@
 </div>
 
 <script>
-  (function loadSoloWidget() {
-    // Skip widget on file:// previews to avoid cross-origin frame errors.
-    if (window.location.protocol === "file:") return;
+  window.__loadSoloWidget = function loadSoloWidget() {
+    if (window.__soloWidgetLoaded) return true;
+    if (window.location.protocol === "file:") return false;
     const script = document.createElement("script");
     script.src = "https://solomail.io/chat/widget.js";
     script.async = true;
     script.dataset.identity = "investors";
+    script.onerror = function onWidgetError() {
+      console.warn("Solo chat widget could not load for this origin/identity.");
+    };
     document.body.appendChild(script);
-  })();
+    window.__soloWidgetLoaded = true;
+    return true;
+  };
 </script>
 <script>
 (function(){
@@ -814,6 +820,15 @@
   document.getElementById('themeToggle').addEventListener('click',()=>{
     const html=document.documentElement;
     html.setAttribute('data-theme',html.getAttribute('data-theme')==='dark'?'light':'dark');
+  });
+
+  const chatLaunch = document.getElementById('chatLaunch');
+  chatLaunch.addEventListener('click', () => {
+    const loaded = window.__loadSoloWidget ? window.__loadSoloWidget() : false;
+    if (loaded) {
+      chatLaunch.textContent = '✓';
+      chatLaunch.setAttribute('aria-label', 'Solo Chat Loaded');
+    }
   });
 
 })();
