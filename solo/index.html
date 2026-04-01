@@ -74,6 +74,19 @@
   .slide-viewport{flex:1;position:relative;overflow:hidden}
   .slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:0 100px;opacity:0;transform:translateY(30px);transition:opacity .5s,transform .5s;pointer-events:none;overflow-y:auto}
   .slide.active{opacity:1;transform:translateY(0);pointer-events:auto}
+  .slide-image-backdrop{
+    position:absolute;right:0;top:0;bottom:0;width:50%;
+    background-size:cover;background-position:center;
+    transform:scale(1.28);
+    transform-origin:right center;
+    opacity:.28;
+    pointer-events:none;
+    filter:saturate(.95) contrast(.95);
+    -webkit-mask-image:linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,.22) 35%, rgba(0,0,0,.72) 72%, rgba(0,0,0,1) 100%);
+    mask-image:linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,.22) 35%, rgba(0,0,0,.72) 72%, rgba(0,0,0,1) 100%);
+    z-index:0;
+  }
+  .slide > :not(.slide-image-backdrop){position:relative;z-index:1}
 
   /* Slide content */
   .slide-eyebrow{font-family:'Space Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:2.5px;color:var(--solo-accent);margin-bottom:12px}
@@ -82,6 +95,15 @@
 
   /* Body items */
   .slide-body{margin-top:36px;display:flex;flex-direction:column;gap:12px}
+  .slide-body.image-right{
+    display:grid;
+    grid-template-columns:minmax(420px, 1fr) minmax(320px, 460px);
+    align-items:start;
+    gap:22px;
+    max-width:1040px;
+  }
+  .slide-body.image-right .image-right-items{display:flex;flex-direction:column;gap:12px}
+  .slide-body.image-right .slide-image-card{max-width:100%;margin-top:0;justify-self:end}
   .slide-item{display:flex;align-items:flex-start;gap:16px;padding:16px 20px;background:var(--solo-accent-soft);border:1px solid transparent;border-radius:var(--radius-card);opacity:.18;transform:translateY(6px);transition:opacity var(--transition-reveal),transform var(--transition-reveal),border-color var(--transition-reveal),background var(--transition-reveal),box-shadow var(--transition-reveal);max-width:700px}
   .slide-item.revealed{opacity:1;transform:translateY(0);border-color:var(--solo-border);background:var(--solo-surface)}
   .slide-item.revealed.current{border-color:var(--solo-accent);background:var(--solo-accent-glow);box-shadow:var(--shadow-glow)}
@@ -96,6 +118,42 @@
   .slide-image-card img{width:100%;display:block}
   .slide-image-card .img-placeholder{width:100%;height:300px;background:linear-gradient(135deg,var(--solo-accent-soft),rgba(123,97,255,.06));display:flex;align-items:center;justify-content:center;color:var(--solo-muted);font-size:13px;font-family:'Space Mono',monospace}
   .slide-image-card .card-caption{padding:12px 18px;font-size:12px;color:var(--solo-muted);border-top:1px solid var(--solo-border);transition:color .3s,border-color .3s}
+  .image-fan-layout{
+    width:100%;max-width:1020px;
+    display:grid;grid-template-columns:minmax(320px, 1fr) minmax(420px, 1.15fr);
+    align-items:start;gap:18px;
+  }
+  .fan-copy{max-width:520px}
+  .fan-copy .slide-eyebrow{margin-bottom:10px}
+  .fan-copy .slide-title{max-width:100%}
+  .fan-copy .slide-subtitle{max-width:100%;margin-top:12px}
+  .image-fan{position:relative;max-width:100%;width:100%;height:420px}
+  .fan-card{
+    position:absolute;left:0;top:0;
+    width:min(560px,96%);
+    border-radius:14px;overflow:hidden;
+    border:1px solid var(--solo-border);background:var(--solo-surface);
+    box-shadow:var(--shadow-card);
+    opacity:0;
+    transform:translate(10px, 18px) rotate(-1.4deg) scale(.985);
+    transform-origin:left center;
+    transition:opacity .36s cubic-bezier(0.23,1,0.32,1),transform .46s cubic-bezier(0.23,1,0.32,1),box-shadow .36s,border-color .36s;
+  }
+  .fan-card img{width:100%;display:block}
+  .fan-card .fan-caption{
+    padding:10px 14px;font-size:11px;color:var(--solo-muted);
+    border-top:1px solid var(--solo-border);background:color-mix(in srgb, var(--solo-surface) 90%, transparent);
+  }
+  .fan-card.revealed{
+    opacity:.9;
+    transform:translate(var(--fan-x), var(--fan-y)) rotate(var(--fan-rot)) scale(1);
+  }
+  .fan-card.revealed.current{
+    opacity:1;
+    border-color:var(--solo-accent);
+    box-shadow:var(--shadow-glow), var(--shadow-card);
+    transform:translate(var(--fan-x), calc(var(--fan-y) - 6px)) rotate(var(--fan-rot)) scale(1.012);
+  }
 
   /* Title slide */
   .slide.title-slide{align-items:center;text-align:center;padding:0 60px}
@@ -240,14 +298,23 @@
       padding:18px 20px calc(128px + env(safe-area-inset-bottom));
       justify-content:flex-start;
     }
+    .slide-image-backdrop{display:none}
     .slide.title-slide{padding:18px 20px calc(128px + env(safe-area-inset-bottom))}
     .slide-title{font-size:clamp(30px,9vw,46px);line-height:1.12}
     .slide-subtitle{font-size:15px;line-height:1.45;margin-top:12px}
     .slide-body{margin-top:24px;gap:10px}
+    .slide-body.image-right{display:flex;max-width:100%;gap:10px}
     .slide-item{max-width:100%;padding:14px 14px}
     .item-content h3{font-size:19px}
     .item-content p{font-size:12px}
     .slide-image-card{max-width:100%}
+    .image-fan-layout{grid-template-columns:1fr;gap:14px}
+    .fan-copy{max-width:100%}
+    .image-fan{height:340px}
+    .fan-card{
+      width:min(94%,520px);
+    }
+    .fan-card .fan-caption{font-size:10px}
     .orch-container{max-width:100%}
     .orch-segments{gap:6px}
     .orch-segment-chip{padding:5px 9px;font-size:10px}
@@ -272,6 +339,8 @@
     .slide.title-slide{padding-left:16px;padding-right:16px}
     .slide-title{font-size:clamp(27px,10.5vw,40px)}
     .slide-subtitle{font-size:14px}
+    .image-fan{height:300px}
+    .fan-card{width:min(96%,500px)}
   }
   @keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
   .topbar,.bottombar{animation:fadeInUp .6s ease forwards}
@@ -516,7 +585,43 @@
       ]
     },
 
-    // ─── 11. Labor & Margin Shift ───
+    // ─── 11. Target Segment Examples ───
+    {
+      layout: "default",
+      eyebrow: "Segment Examples",
+      title: "One orchestration model, multiple fractional-labor markets",
+      subtitle: "Press down to fan through representative segments where Solo can govern inbound and outbound execution.",
+      imageFan: true,
+      images: [
+        {
+          src: "assets/images/segment-hr-execution-platform.png",
+          alt: "HR execution platform example",
+          caption: "HR execution platform: onboarding, compliance, and people-ops workflows."
+        },
+        {
+          src: "assets/images/segment-enterprise-support-automation.png",
+          alt: "Enterprise support automation example",
+          caption: "Enterprise support automation with human-in-the-loop governance."
+        },
+        {
+          src: "assets/images/segment-k12-technical-support.png",
+          alt: "K-12 technical support example",
+          caption: "K-12 technical support with AI-first resolution and expert escalation."
+        },
+        {
+          src: "assets/images/segment-district-backoffice-automation.png",
+          alt: "District back-office automation example",
+          caption: "District back-office inquiries routed with privacy and audit controls."
+        },
+        {
+          src: "assets/images/segment-sales-pipeline-growth.png",
+          alt: "Sales pipeline growth example",
+          caption: "Fractional revenue teams scaling outreach and follow-up execution."
+        }
+      ]
+    },
+
+    // ─── 12. Labor & Margin Shift ───
     {
       layout: "default",
       eyebrow: "Economic Effect",
@@ -536,7 +641,7 @@
       ]
     },
 
-    // ─── 12. Service Price Compression ───
+    // ─── 13. Service Price Compression ───
     {
       layout: "default",
       eyebrow: "Price Pressure",
@@ -556,7 +661,7 @@
       ]
     },
 
-    // ─── 13. Infrastructure Counterforce ───
+    // ─── 14. Infrastructure Counterforce ───
     {
       layout: "default",
       eyebrow: "The Counterforce",
@@ -581,12 +686,14 @@
       ]
     },
 
-    // ─── 14. Solo's Position ───
+    // ─── 15. Solo's Position ───
     {
       layout: "default",
       eyebrow: "Solo",
       title: "Solo is positioned at the workflow shift",
       subtitle: "Not an AI feature layer — the governed operating layer that sits in front of inbound work, coordinates agents and humans, and turns fragmented communication into structured execution.",
+      imageRight: true,
+      imageBackdrop: true,
       items: [
         {
           icon: "🤖",
@@ -605,13 +712,13 @@
         }
       ],
       image: {
-        src: "",
-        alt: "Solo dashboard",
-        caption: "Solo's governed workflow interface — screenshot placeholder"
+        src: "assets/images/segment-solo-agent-team.png",
+        alt: "Solo agent team dashboard",
+        caption: "Live Solo agent team view with role-based operators and active workflow capacity."
       }
     },
 
-    // ─── 15. Orchestration Flow (visual diagram) ───
+    // ─── 16. Orchestration Flow (visual diagram) ───
     {
       layout: "default",
       eyebrow: "How It Works",
@@ -628,7 +735,7 @@
       }
     },
 
-    // ─── 16. The Moat ───
+    // ─── 17. The Moat ───
     {
       layout: "default",
       eyebrow: "Defensibility",
@@ -658,7 +765,7 @@
       ]
     },
 
-    // ─── 17. Close ───
+    // ─── 18. Close ───
     {
       layout: "title",
       eyebrow: "The Question",
@@ -719,21 +826,55 @@
     el.className = 'slide' + (isTitle ? ' title-slide' : '');
     el.dataset.slide = si;
 
-    let h = '<div class="slide-heading">';
+    const hasItems = s.items && s.items.length;
+    const hasImage = s.image;
+    const hasImageFan = s.imageFan && Array.isArray(s.images) && s.images.length > 0;
+    const hasOrch = s.orchestration;
+    const useImageRight = !!(s.imageRight && hasImage && hasItems);
+    const useImageBackdrop = !!(s.imageBackdrop && hasImage && s.image.src);
+    let revealIdx = 0;
+
+    let h = '';
+    if (useImageBackdrop) {
+      h += `<div class="slide-image-backdrop" style="background-image:url('${escAttr(s.image.src)}')"></div>`;
+    }
+    if (hasImageFan) {
+      h += `<div class="image-fan-layout">`;
+      h += `<div class="fan-copy">`;
+      if (s.eyebrow) h += `<div class="slide-eyebrow">${esc(s.eyebrow)}</div>`;
+      h += `<h1 class="slide-title">${esc(s.title)}</h1>`;
+      if (s.subtitle) h += `<p class="slide-subtitle">${esc(s.subtitle)}</p>`;
+      if (hasItems) {
+        h += `<div class="slide-body">`;
+        s.items.forEach((item) => {
+          h += `<div class="slide-item" data-item="${revealIdx}">
+            <div class="item-icon">${item.icon}</div>
+            <div class="item-content"><h3>${esc(item.head)}</h3><p>${esc(item.body)}</p></div>
+          </div>`;
+          revealIdx++;
+        });
+        h += `</div>`;
+      }
+      h += `</div>`;
+      h += buildImageFan(revealIdx, s.images);
+      revealIdx += s.images.length;
+      h += `</div>`;
+      el.innerHTML = h;
+      viewport.appendChild(el);
+      return;
+    }
+
+    h += '<div class="slide-heading">';
     if (s.eyebrow) h += `<div class="slide-eyebrow">${esc(s.eyebrow)}</div>`;
     h += `<h1 class="slide-title">${esc(s.title)}</h1>`;
     if (s.subtitle) h += `<p class="slide-subtitle">${esc(s.subtitle)}</p>`;
     h += '</div>';
 
-    const hasItems = s.items && s.items.length;
-    const hasImage = s.image;
-    const hasOrch = s.orchestration;
-    let revealIdx = 0;
-
-    if (hasItems || hasImage || hasOrch) {
-      h += `<div class="slide-body"${isTitle ? ' style="align-items:center;"' : ''}>`;
+    if (hasItems || hasImage || hasImageFan || hasOrch) {
+      h += `<div class="slide-body${useImageRight ? ' image-right' : ''}"${isTitle ? ' style="align-items:center;"' : ''}>`;
 
       if (hasItems) {
+        if (useImageRight) h += `<div class="image-right-items">`;
         s.items.forEach((item) => {
           h += `<div class="slide-item" data-item="${revealIdx}"${isTitle ? ' style="max-width:420px;"' : ''}>
             <div class="item-icon">${item.icon}</div>
@@ -741,6 +882,7 @@
           </div>`;
           revealIdx++;
         });
+        if (useImageRight) h += `</div>`;
       }
 
       if (hasOrch) {
@@ -865,8 +1007,36 @@
     </div>`;
   }
 
+  function buildImageFan(startIdx, images) {
+    const mid = (images.length - 1) / 2;
+    let h = '<div class="image-fan">';
+    images.forEach((img, ii) => {
+      const spread = ii - mid;
+      const x = 98 + (ii * 48) + Math.abs(spread) * 12;
+      const y = 18 + (spread * spread * 12);
+      const rot = spread * 6;
+      const z = 100 + ii;
+      h += `<div class="fan-card" data-item="${startIdx + ii}" style="--fan-index:${ii};--fan-x:${x}px;--fan-y:${y}px;--fan-rot:${rot}deg;z-index:${z};">`;
+      if (img.src) h += `<img src="${esc(img.src)}" alt="${esc(img.alt || 'Segment example')}" />`;
+      else h += `<div class="img-placeholder">[ ${esc(img.alt || 'Segment example')} ]</div>`;
+      if (img.caption) h += `<div class="fan-caption">${esc(img.caption)}</div>`;
+      h += '</div>';
+    });
+    h += '</div>';
+    return h;
+  }
+
   function esc(str) {
     return str.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function escAttr(str) {
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
   }
 
   /* ═══════════════════════════════════════════
@@ -882,7 +1052,7 @@
   counterTotal.textContent = String(totalSlides).padStart(2,'0');
 
   function getItems(si){
-    return slides[si].querySelectorAll('.slide-item, .slide-image-card, .orch-step');
+    return slides[si].querySelectorAll('.slide-item, .slide-image-card, .fan-card, .orch-step');
   }
 
   function render(){
