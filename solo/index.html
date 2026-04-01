@@ -221,6 +221,58 @@
     display:block!important;
   }
   @media (max-width:900px){#solo-chat-widget-container{right:16px!important;bottom:88px!important}}
+
+  /* Mobile layout */
+  @media (max-width: 900px){
+    .topbar{padding:14px 16px;gap:10px}
+    .topbar-left{min-width:0;flex:1}
+    .logo-mark{width:28px;height:28px;font-size:13px}
+    .logo-text{
+      font-size:14px;line-height:1.25;
+      display:-webkit-box;line-clamp:2;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+      overflow:hidden;
+    }
+    .topbar-right{gap:8px}
+    .slide-counter{padding:6px 10px;font-size:12px}
+    .theme-toggle{width:36px;height:36px;border-radius:9px}
+
+    .slide{
+      padding:18px 20px calc(128px + env(safe-area-inset-bottom));
+      justify-content:flex-start;
+    }
+    .slide.title-slide{padding:18px 20px calc(128px + env(safe-area-inset-bottom))}
+    .slide-title{font-size:clamp(30px,9vw,46px);line-height:1.12}
+    .slide-subtitle{font-size:15px;line-height:1.45;margin-top:12px}
+    .slide-body{margin-top:24px;gap:10px}
+    .slide-item{max-width:100%;padding:14px 14px}
+    .item-content h3{font-size:19px}
+    .item-content p{font-size:12px}
+    .slide-image-card{max-width:100%}
+    .orch-container{max-width:100%}
+    .orch-segments{gap:6px}
+    .orch-segment-chip{padding:5px 9px;font-size:10px}
+    .orch-segment-chip .chip-step{width:16px;height:16px;font-size:8px}
+    .orch-flow{padding:14px 8px 12px}
+
+    .bottombar{
+      position:fixed;left:0;right:0;bottom:0;z-index:60;
+      padding:10px 16px calc(10px + env(safe-area-inset-bottom));
+      background:linear-gradient(180deg,rgba(11,14,23,0),color-mix(in srgb,var(--solo-bg) 92%, transparent) 30%,var(--solo-bg));
+      backdrop-filter:blur(4px);
+    }
+    .nav-hint{font-size:11px;gap:10px}
+    .key-badge{width:22px;height:22px;font-size:11px}
+    .nav-btn{width:42px;height:42px}
+
+    #solo-chat-widget-container{right:14px!important;bottom:118px!important}
+  }
+
+  @media (max-width: 520px){
+    .slide{padding-left:16px;padding-right:16px}
+    .slide.title-slide{padding-left:16px;padding-right:16px}
+    .slide-title{font-size:clamp(27px,10.5vw,40px)}
+    .slide-subtitle{font-size:14px}
+  }
   @keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
   .topbar,.bottombar{animation:fadeInUp .6s ease forwards}
 </style>
