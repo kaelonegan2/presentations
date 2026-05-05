@@ -202,6 +202,7 @@
     gap:10px;
     width:100%;
     max-width:980px;
+    position:relative;
   }
   .visual-image{
     width:100%;
@@ -216,6 +217,19 @@
     color:var(--solo-muted);
     line-height:1.4;
     word-break:break-word;
+  }
+  .visual-image-thumb{
+    position:absolute;
+    right:18px;
+    bottom:18px;
+    width:116px;
+    height:116px;
+    border-radius:12px;
+    border:2px solid color-mix(in oklab,var(--solo-accent) 55%, #fff);
+    background:#fff;
+    padding:4px;
+    object-fit:cover;
+    box-shadow:var(--shadow-card);
   }
 
   .slide-body{margin-top:34px;display:flex;flex-direction:column;gap:12px}
@@ -259,6 +273,7 @@
     .slide-subtitle{font-size:15px}
     .visual-card{max-width:100%;padding:12px 12px}
     .visual-image{max-height:260px}
+    .visual-image-thumb{width:84px;height:84px;right:14px;bottom:14px}
     .slide-body{margin-top:22px}
     .slide-item{max-width:100%;padding:14px}
     .bottombar{
@@ -306,7 +321,9 @@
         ],
         chips: ["Beginner-friendly", "Practical", "PowerSchool-aware"],
         imageSrc: "assets/images/main-page-agent-flow.png",
-        imageAlt: "AI agent flow screenshot"
+        imageAlt: "AI agent flow screenshot",
+        thumbSrc: "assets/images/backchannel-qr.png",
+        thumbAlt: "Backchannel QR thumbnail"
       }
     },
     {
@@ -808,6 +825,7 @@
     if (v.imageSrc) {
       h += '<div class="visual-image-wrap">';
       h += '<img class="visual-image" src="' + escAttr(v.imageSrc) + '" alt="' + escAttr(v.imageAlt || 'visual') + '" />';
+      if (v.thumbSrc) h += '<img class="visual-image-thumb" src="' + escAttr(v.thumbSrc) + '" alt="' + escAttr(v.thumbAlt || 'thumbnail') + '" />';
       if (v.imageCaption) h += '<div class="visual-image-caption">' + esc(v.imageCaption) + '</div>';
       h += '</div>';
     }
