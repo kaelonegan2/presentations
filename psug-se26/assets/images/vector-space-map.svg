@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" role="img" aria-label="Vector space meaning map">
+  <rect width="1200" height="700" fill="#0f172a"/>
+  <text x="80" y="100" fill="#e2e8f0" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="700">Tokens Become Embeddings in Meaning Space</text>
+  <g opacity="0.18">
+    <circle cx="350" cy="380" r="210" fill="#3b82f6"/>
+    <circle cx="710" cy="300" r="180" fill="#14b8a6"/>
+    <circle cx="930" cy="470" r="170" fill="#f59e0b"/>
+  </g>
+  <g font-family="Inter, Arial, sans-serif" font-size="24" fill="#f8fafc">
+    <circle cx="300" cy="360" r="8" fill="#93c5fd"/><text x="320" y="368">enrollment</text>
+    <circle cx="260" cy="430" r="8" fill="#93c5fd"/><text x="280" y="438">registration</text>
+    <circle cx="390" cy="420" r="8" fill="#93c5fd"/><text x="410" y="428">portal</text>
+    <circle cx="690" cy="290" r="8" fill="#5eead4"/><text x="710" y="298">document</text>
+    <circle cx="760" cy="340" r="8" fill="#5eead4"/><text x="780" y="348">form</text>
+    <circle cx="650" cy="360" r="8" fill="#5eead4"/><text x="670" y="368">incomplete</text>
+    <circle cx="900" cy="470" r="8" fill="#fcd34d"/><text x="920" y="478">attendance</text>
+    <circle cx="980" cy="520" r="8" fill="#fcd34d"/><text x="1000" y="528">outreach</text>
+  </g>
+  <text x="80" y="650" fill="#94a3b8" font-family="Inter, Arial, sans-serif" font-size="22">Closer points often represent stronger semantic relationships.</text>
+</svg>

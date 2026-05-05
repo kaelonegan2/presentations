@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" role="img" aria-label="AI concepts to workflow journey">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0d1b2a"/>
+      <stop offset="100%" stop-color="#1b263b"/>
+    </linearGradient>
+    <linearGradient id="path" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#3dd9c5"/>
+      <stop offset="100%" stop-color="#5ea4ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="700" fill="url(#bg)"/>
+  <path d="M120 560 C260 420, 360 420, 500 300 C640 180, 760 180, 1040 140" fill="none" stroke="url(#path)" stroke-width="16" stroke-linecap="round"/>
+  <g fill="#e8f1ff" font-family="Inter, Arial, sans-serif" text-anchor="middle">
+    <circle cx="170" cy="520" r="54" fill="#17324f"/><text x="170" y="528" font-size="22">AI</text>
+    <circle cx="470" cy="320" r="54" fill="#17324f"/><text x="470" y="328" font-size="19">Specificity</text>
+    <circle cx="760" cy="185" r="54" fill="#17324f"/><text x="760" y="193" font-size="18">Workflow</text>
+    <circle cx="1040" cy="140" r="54" fill="#17324f"/><text x="1040" y="148" font-size="18">School Use</text>
+  </g>
+  <text x="110" y="120" fill="#b6d7ff" font-family="Inter, Arial, sans-serif" font-size="36" font-weight="600">From Concepts to Practical School Work</text>
+</svg>

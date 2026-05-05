@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fine-Tuning AI to PowerSchool-Specific Workflows — PSUG SE26</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root, [data-theme="dark"] {
+    --solo-bg: oklch(18% 0.03 220);
+    --solo-surface: oklch(24% 0.03 220);
+    --solo-border: oklch(34% 0.04 220);
+    --solo-muted: oklch(70% 0.03 220);
+    --solo-text: oklch(86% 0.02 220);
+    --solo-bright: oklch(96% 0.01 200);
+    --solo-white: oklch(98% 0.01 200);
+    --solo-accent: oklch(50% 0.14 180);
+    --solo-accent-2: oklch(55% 0.12 200);
+    --solo-accent-glow: color-mix(in oklab, var(--solo-accent) 24%, transparent);
+    --solo-accent-soft: color-mix(in oklab, var(--solo-accent) 14%, transparent);
+    --solo-gradient-a: color-mix(in oklab, var(--solo-accent) 12%, transparent);
+    --solo-gradient-b: color-mix(in oklab, oklch(60% 0.16 160) 10%, transparent);
+    --shadow-card: 0 2px 24px rgba(0,0,0,0.25), 0 0 0 1px rgba(255,255,255,0.04);
+    --shadow-glow: 0 0 28px color-mix(in oklab, var(--solo-accent) 22%, transparent);
+  }
+
+  [data-theme="light"] {
+    --solo-bg: oklch(98% 0.01 210);
+    --solo-surface: oklch(100% 0 0);
+    --solo-border: oklch(88% 0.02 220);
+    --solo-muted: oklch(50% 0.02 220);
+    --solo-text: oklch(36% 0.02 220);
+    --solo-bright: oklch(22% 0.02 220);
+    --solo-white: oklch(18% 0.02 220);
+    --solo-accent: oklch(65% 0.14 180);
+    --solo-accent-2: oklch(60% 0.16 160);
+    --solo-accent-glow: color-mix(in oklab, var(--solo-accent) 16%, transparent);
+    --solo-accent-soft: color-mix(in oklab, var(--solo-accent) 8%, transparent);
+    --solo-gradient-a: color-mix(in oklab, var(--solo-accent) 8%, transparent);
+    --solo-gradient-b: color-mix(in oklab, var(--solo-accent-2) 8%, transparent);
+    --shadow-card: 0 2px 20px rgba(0,0,0,0.07), 0 0 0 1px rgba(0,0,0,0.05);
+    --shadow-glow: 0 0 24px color-mix(in oklab, var(--solo-accent) 14%, transparent);
+  }
+
+  :root {
+    --radius-card: 14px;
+    --transition-reveal: 0.42s cubic-bezier(0.23,1,0.32,1);
+  }
+
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html,body{
+    height:100%;
+    overflow:hidden;
+    background:var(--solo-bg);
+    color:var(--solo-text);
+    font-family:'Space Grotesk',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    transition:background .35s,color .35s;
+  }
+  body::before{
+    content:'';
+    position:fixed;
+    top:-40%;
+    left:-20%;
+    width:80%;
+    height:80%;
+    background:radial-gradient(ellipse,var(--solo-gradient-a) 0%,transparent 70%);
+    pointer-events:none;
+    z-index:0;
+  }
+  body::after{
+    content:'';
+    position:fixed;
+    bottom:-30%;
+    right:-10%;
+    width:60%;
+    height:60%;
+    background:radial-gradient(ellipse,var(--solo-gradient-b) 0%,transparent 70%);
+    pointer-events:none;
+    z-index:0;
+  }
+
+  #deck{position:relative;z-index:1;width:100%;height:100%;display:flex;flex-direction:column}
+
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:20px 48px;flex-shrink:0}
+  .topbar-left{display:flex;align-items:center;gap:10px;min-width:0}
+  .logo-mark{
+    width:34px;height:34px;border-radius:9px;
+    background:linear-gradient(135deg,var(--solo-accent),var(--solo-accent-2));
+    display:flex;align-items:center;justify-content:center;
+    font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:15px;color:#fff;
+  }
+  .logo-text{
+    font-size:18px;font-weight:700;color:var(--solo-white);letter-spacing:-0.2px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .topbar-right{display:flex;align-items:center;gap:12px}
+  .slide-counter{
+    font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--solo-muted);
+    background:var(--solo-surface);border:1px solid var(--solo-border);border-radius:8px;padding:6px 12px;
+  }
+  .slide-counter .current{color:var(--solo-accent);font-weight:700}
+  .theme-toggle{
+    width:40px;height:40px;background:var(--solo-surface);border:1px solid var(--solo-border);
+    border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;
+    color:var(--solo-muted);font-size:18px;
+  }
+  .theme-toggle:hover{background:var(--solo-accent-glow);border-color:var(--solo-accent);color:var(--solo-accent)}
+  .theme-toggle .icon-sun,.theme-toggle .icon-moon{display:none}
+  [data-theme="dark"] .theme-toggle .icon-sun{display:block}
+  [data-theme="light"] .theme-toggle .icon-moon{display:block}
+
+  .progress-track{height:2px;background:var(--solo-surface);flex-shrink:0}
+  .progress-fill{
+    height:100%;
+    background:linear-gradient(90deg,var(--solo-accent),var(--solo-accent-2));
+    transition:width .45s cubic-bezier(.23,1,.32,1);
+    border-radius:0 2px 2px 0;
+  }
+
+  .slide-viewport{flex:1;position:relative;overflow:hidden}
+  .slide{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;justify-content:center;
+    padding:0 100px;
+    opacity:0;transform:translateY(26px);
+    transition:opacity .5s,transform .5s;
+    pointer-events:none;overflow-y:auto;
+  }
+  .slide.active{opacity:1;transform:translateY(0);pointer-events:auto}
+  .slide.title-slide{align-items:center;text-align:center;padding:0 60px}
+  .slide.title-slide .slide-heading{display:flex;flex-direction:column;align-items:center}
+  .slide.title-slide .slide-title{
+    font-size:clamp(34px,5vw,62px);
+    max-width:940px;
+    background:linear-gradient(135deg,var(--solo-white) 28%,var(--solo-accent) 100%);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  }
+  .slide.title-slide .slide-subtitle{max-width:640px;text-align:center}
+
+  .slide-eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--solo-accent);margin-bottom:12px;
+  }
+  .slide-title{
+    font-size:clamp(30px,4vw,50px);font-weight:700;color:var(--solo-white);
+    line-height:1.15;letter-spacing:-0.8px;max-width:860px;
+  }
+  .slide-subtitle{
+    font-size:clamp(15px,1.6vw,19px);color:var(--solo-muted);
+    margin-top:14px;max-width:760px;line-height:1.55;font-weight:400;
+  }
+
+  .visual-card{
+    margin-top:18px;
+    max-width:1040px;
+    border:1px solid var(--solo-border);
+    background:linear-gradient(180deg,color-mix(in oklab,var(--solo-surface) 92%, transparent),var(--solo-surface));
+    border-radius:14px;
+    padding:16px 18px;
+    opacity:.16;
+    transform:translateY(6px);
+    transition:opacity var(--transition-reveal),transform var(--transition-reveal),border-color var(--transition-reveal),box-shadow var(--transition-reveal);
+  }
+  .visual-card.revealed{opacity:1;transform:translateY(0)}
+  .visual-card.revealed.current{border-color:var(--solo-accent);box-shadow:var(--shadow-glow)}
+  .visual-title{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:1.4px;
+    color:var(--solo-accent);
+    margin-bottom:8px;
+  }
+  .visual-lines{display:flex;flex-direction:column;gap:7px}
+  .visual-line{
+    font-size:14px;
+    color:var(--solo-text);
+    padding:8px 12px;
+    border-radius:8px;
+    border:1px solid color-mix(in oklab,var(--solo-border) 65%, transparent);
+    background:color-mix(in oklab,var(--solo-accent-soft) 45%, transparent);
+  }
+  .visual-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .visual-chip{
+    font-size:12px;
+    color:var(--solo-muted);
+    border:1px solid var(--solo-border);
+    border-radius:999px;
+    padding:5px 10px;
+    background:color-mix(in oklab,var(--solo-surface) 92%, transparent);
+  }
+  .visual-image-wrap{
+    margin-top:12px;
+    border:1px solid color-mix(in oklab,var(--solo-border) 70%, transparent);
+    border-radius:10px;
+    padding:12px;
+    background:color-mix(in oklab,var(--solo-surface) 90%, transparent);
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    width:100%;
+    max-width:980px;
+  }
+  .visual-image{
+    width:100%;
+    max-height:360px;
+    object-fit:contain;
+    border-radius:8px;
+    display:block;
+    background:#fff;
+  }
+  .visual-image-caption{
+    font-size:12px;
+    color:var(--solo-muted);
+    line-height:1.4;
+    word-break:break-word;
+  }
+
+  .slide-body{margin-top:34px;display:flex;flex-direction:column;gap:12px}
+  .slide-item{
+    display:flex;align-items:flex-start;gap:14px;padding:16px 20px;max-width:760px;
+    background:var(--solo-accent-soft);border:1px solid transparent;border-radius:var(--radius-card);
+    opacity:.16;transform:translateY(6px);
+    transition:opacity var(--transition-reveal),transform var(--transition-reveal),border-color var(--transition-reveal),background var(--transition-reveal),box-shadow var(--transition-reveal);
+  }
+  .slide-item.revealed{opacity:1;transform:translateY(0);border-color:var(--solo-border);background:var(--solo-surface)}
+  .slide-item.revealed.current{border-color:var(--solo-accent);background:var(--solo-accent-glow);box-shadow:var(--shadow-glow)}
+  .item-icon{
+    width:34px;height:34px;border-radius:9px;background:var(--solo-accent-glow);
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px;
+  }
+  .item-content h3{font-size:15px;font-weight:600;color:var(--solo-bright);margin-bottom:3px}
+  .item-content p{font-size:13px;color:var(--solo-muted);line-height:1.5}
+
+  .bottombar{display:flex;align-items:center;justify-content:space-between;padding:14px 48px 20px;flex-shrink:0}
+  .nav-hint{font-size:12px;color:var(--solo-muted);font-family:'IBM Plex Mono',monospace}
+  .key-badge{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:24px;height:24px;background:var(--solo-surface);border:1px solid var(--solo-border);
+    border-radius:6px;font-size:12px;color:var(--solo-text);margin:0 2px;
+  }
+  .nav-arrows{display:flex;gap:8px}
+  .nav-btn{
+    width:40px;height:40px;background:var(--solo-surface);border:1px solid var(--solo-border);
+    border-radius:10px;color:var(--solo-text);display:flex;align-items:center;justify-content:center;
+    cursor:pointer;font-size:18px;
+  }
+  .nav-btn:hover{background:var(--solo-accent-glow);border-color:var(--solo-accent);color:var(--solo-accent)}
+
+  @media (max-width: 900px){
+    .topbar{padding:14px 16px}
+    .logo-text{font-size:14px}
+    .theme-toggle{width:36px;height:36px}
+    .slide{padding:18px 20px calc(122px + env(safe-area-inset-bottom));justify-content:flex-start}
+    .slide.title-slide{padding:18px 20px calc(122px + env(safe-area-inset-bottom))}
+    .slide-title{font-size:clamp(30px,9vw,44px)}
+    .slide-subtitle{font-size:15px}
+    .visual-card{max-width:100%;padding:12px 12px}
+    .visual-image{max-height:260px}
+    .slide-body{margin-top:22px}
+    .slide-item{max-width:100%;padding:14px}
+    .bottombar{
+      position:fixed;left:0;right:0;bottom:0;z-index:40;
+      padding:10px 16px calc(10px + env(safe-area-inset-bottom));
+      background:linear-gradient(180deg,rgba(0,0,0,0),color-mix(in oklab,var(--solo-bg) 90%, transparent) 30%,var(--solo-bg));
+      backdrop-filter:blur(4px);
+    }
+  }
+</style>
+</head>
+<body>
+<div id="deck">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="logo-mark">P</div>
+      <div class="logo-text">Fine-Tuning AI to PowerSchool-Specific Workflows · PSUG SE26</div>
+    </div>
+    <div class="topbar-right">
+      <div class="slide-counter"><span class="current" id="counterCurrent">01</span><span> / </span><span id="counterTotal">--</span></div>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"><span class="icon-sun">☀️</span><span class="icon-moon">🌙</span></button>
+    </div>
+  </div>
+  <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+  <div class="slide-viewport" id="slideViewport"></div>
+  <div class="bottombar">
+    <div class="nav-hint"><span class="key-badge">↑</span><span class="key-badge">↓</span> Navigate</div>
+    <div class="nav-arrows"><button class="nav-btn" id="btnPrev" aria-label="Previous">↑</button><button class="nav-btn" id="btnNext" aria-label="Next">↓</button></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const SLIDES = [
+    {
+      layout: "title",
+      eyebrow: "PSUG Myrtle Beach",
+      title: "Fine-Tuning AI to PowerSchool-Specific Workflows",
+      subtitle: "Understanding how AI works, how it learns, and how it becomes useful in school operations",
+      visual: {
+        title: "Progression",
+        lines: [
+          "AI concepts -> specificity -> workflow -> school application",
+          "Context + clear tasks + trusted info + safe boundaries + human control"
+        ],
+        chips: ["Beginner-friendly", "Practical", "PowerSchool-aware"],
+        imageSrc: "assets/images/main-page-agent-flow.png",
+        imageAlt: "AI agent flow screenshot"
+      }
+    },
+    {
+      layout: "default",
+      eyebrow: "Session framing",
+      title: "What You'll Learn Today",
+      visual: {
+        title: "Learning arc",
+        chips: [
+          "LLM basics",
+          "Transformers + attention",
+          "Context + windows",
+          "RAG + retrieval",
+          "Fine-tuning",
+          "Agents + workflows",
+          "HITL",
+          "PowerSchool applications"
+        ]
+      },
+      items: [
+        { icon: "🧭", head: "Course goal", body: "By the end, you should understand enough to identify and scope a safe first workflow in your own environment." },
+        { icon: "💡", head: "Core idea", body: "AI is easier to use well when you understand what it is actually doing." }
+      ]
+    },
+    {
+      layout: "default",
+      eyebrow: "Grounding",
+      title: "Why School Work Is a Great AI Example",
+      visual: {
+        title: "Schools run support-like inquiry systems",
+        chips: ["Inbound requests", "Clarification loops", "Routing", "Escalation", "Status follow-up"]
+      },
+      items: [
+        { icon: "📥", head: "Inbound information work is constant", body: "Schools receive nonstop parent, student, and staff inquiries that start as unstructured messages and require structured follow-through." },
+        { icon: "🤖", head: "Front-end agents create immediate value", body: "An agent can collect missing details, classify request type, and prepare clean handoff context before human staff engage." },
+        { icon: "📊", head: "You gain visibility fast", body: "Capturing question types and missing-info patterns helps teams improve staffing, scripts, and process design over time." }
+      ]
+    },
+    {
+      layout: "default",
+      eyebrow: "Presenter",
+      title: "Who I Am",
+      subtitle: "Kaelon Egan - Founder and ex-PowerSchool VP",
+      visual: {
+        title: "Founder and builder",
+        chips: ["Founder, reply.school", "Founder, psug.pro", "Founder, solomail.io", "Founder, clone.support", "Former VP, PowerSchool"],
+        lines: [
+          "Built for practical school operations and support workflows.",
+          "LinkedIn: linkedin.com/in/kaelonegan",
+          "Site: kaelon.bio",
+          "Email: kaelon@solomail.io"
+        ]
+      },
+      items: [
+        { icon: "🏫", head: "School-first perspective", body: "This session is grounded in the realities of enrollment, support, communication, and policy-aligned operations." },
+        { icon: "🧩", head: "Cross-functional background", body: "Experience spans product, engineering, services, support, and operations across district-facing systems." },
+        { icon: "🎯", head: "Session intent", body: "Translate AI ideas into repeatable workflows that are useful, safe, and understandable for school teams." }
+      ]
+    },
+    {
+      layout: "default",
+      eyebrow: "Participation",
+      title: "Backchannel",
+      subtitle: "backchannel.kaelon.io",
+      visual: {
+        title: "Use it during the session",
+        chips: ["Questions", "Confusing terms", "Workflow ideas", "Examples from your work", "Topics to revisit"],
+        lines: [
+          "Questions are part of the class.",
+          "AI becomes easier when we unpack confusion in real time."
+        ],
+        imageSrc: "/Users/kaelon/.cursor/projects/Users-kaelon-Cursor-Projects-presentation-builder-presentation-builder/assets/image-c2b2a8cf-8813-457b-aae0-4fc65b880063.png",
+        imageAlt: "Backchannel QR code",
+        imageCaption: "https://backchannel.kaelon.io/s/PSUGSE26"
+      },
+      items: [
+        { icon: "💬", head: "Use anytime", body: "Drop questions as they come up so we can keep momentum without leaving people behind." }
+      ]
+    },
+    {
+      layout: "default",
+      eyebrow: "Core concept",
+      title: "AI Is Prediction at Scale",
+      visual: {
+        title: "Sentence continuation intuition",
+        lines: [
+          "\"The parent submitted the enrollment form and now needs ____\"",
+          "Model predicts likely next token candidates from context"
+        ],
+        imageSrc: "assets/images/llm-token-prediction.svg",
+        imageAlt: "Token prediction example"
+      },
+      items: [
+        { icon: "🔤", head: "Definitions", body: "LLM = Large Language Model. A token is a small unit of text (word, word-part, punctuation, or symbol)." },
+        { icon: "🔁", head: "Core mechanism", body: "Responses are generated one token at a time, using visible context." }
+      ]
+    },
+    {
+      layout: "default",
+      eyebrow: "Mechanics",
+      title: "ChatGPT Is the Product, GPT Is the Model",
+      visual: {
+        title: "GPT = Generative Pre-Trained Transformer",
+        lines: [
+          "ChatGPT is a branded application layer on top of GPT-family models",
+          "Pre-training is the large-scale learning phase where the model learns broad language patterns before runtime use"
+        ]
+      },
+      items: [
+        { icon: "📚", head: "What pre-training gives you", body: "General capability: language structure, common reasoning patterns, and instruction-following behavior." },
+        { icon: "🏫", head: "What pre-training does not give you", body: "Your district process, your SIS configuration, your local policy updates, or your approval boundaries." }
+      ]
+    },
+    {
+      layout: "default",
+      eyebrow: "Architecture",
+      title: "The Transformer: The Breakthrough Behind Modern AI",
+      visual: {
+        title: "Relationship modeling",
+        lines: [
+          "Transformers compare token relationships across visible context",
+          "This helps the model connect meaning, references, and dependencies"
+        ],
+        imageSrc: "assets/images/transformer-attention.svg",
+        imageAlt: "Transformer sentence relationship arcs"
+      },
+      items: [
+        { icon: "🧩", head: "Example", body: "In \"The student submitted the form, but it was incomplete,\" the model needs to connect \"it\" to \"form\"." }
+      ]
+    },
+    {
+      layout: "default",
+      eyebrow: "Mechanism",
+      title: "Attention: Relevance as Math",
+      visual: {
+        title: "What attention is doing",
+        lines: [
+          "The model gives each earlier token a relevance score for the current token",
+          "It then turns those scores into weights and uses stronger weights more"
+        ],
+        imageSrc: "assets/images/attention-weights-explained.svg",
+        imageAlt: "Simple attention weights example"
+      },
+      items: [
+        { icon: "🎯", head: "Concrete example", body: "For \"it\" in \"The student submitted the form...\", attention gives a higher weight to \"form\" than to less relevant words." },
+        { icon: "🧮", head: "Light math (optional)", body: "A simple version is score = (Q · K) / sqrt(dk), then softmax converts scores into usable weights." }
+      ]
+    },
+    {
+      layout: "default",
+      eyebrow: "Representation",
+      title: "From Words to Meaning: Tokens Become Vectors",
+      visual: {
+        title: "Embedding intuition",
+        lines: [
+          "Attention from the previous slide runs on vectors, not raw words",
+          "Tokens are converted into numeric embeddings",
+          "Related concepts tend to live closer together in vector space"
+        ],
+        imageSrc: "assets/images/vector-space-map.svg",
+        imageAlt: "Vector space meaning map"
+      },
+      items: [
+        { icon: "🔗", head: "Bridge from attention", body: "Q, K, and V are derived from token vectors, which is why vector representations directly affect attention quality." },
+        { icon: "🗺️", head: "School-domain example", body: "\"Enrollment\" and \"registration\" may cluster near each other, while \"attendance\" sits nearby but distinct." }
+      ]
+    },
+    {
+      layout: "default",
+      eyebrow: "Generation",
+      title: "From Attention to the Next Token",
+      visual: {
+        title: "Generation loop",
+        lines: [
+          "Read visible context -> compare relationships -> build weighted understanding",
+          "Estimate likely next tokens -> choose or sample one -> repeat"
+        ],
+        imageSrc: "assets/images/llm-token-prediction.svg",
+        imageAlt: "Next-token generation loop"
+      },
+      items: [
+        { icon: "🔁", head: "Core line", body: "AI responses are built one token at a time using whatever context is in view." }
+      ]
+    },
+    {
+      layout: "default",
+      eyebrow: "Context",
+      title: "Context: The Model's Field of View",
+      visual: {
+        title: "Field of view",
+        lines: [
+          "May include: question, instructions, history, docs, examples, tool outputs",
+          "If information is not in context, the model cannot directly use it"
+        ],
+        imageSrc: "assets/images/context-window.svg",
+        imageAlt: "Context field of view"
+      },
+      items: [
+        { icon: "📌", head: "Practical implication", body: "Many AI failures are context failures: missing facts, missing constraints, or missing examples." }
+      ]
+    },
+    {
+      layout: "default",
+      eyebrow: "Context scale",
+      title: "Context Windows: How Much the Model Can See",
+      visual: {
+        title: "Window size examples (vary by model/version)",
+        lines: [
+          "GPT-4o class: ~128k context; Claude Sonnet class: ~200k; Gemini 1.5 class: up to ~1M+",
+          "Larger windows help long-document reasoning, but increase cost/latency and can still degrade if too much irrelevant text is included"
+        ],
+        imageSrc: "assets/images/context-window.svg",
+        imageAlt: "Small and large context windows"
+      },
+      items: [
+        { icon: "📚", head: "Performance implication", body: "More context can improve completeness, but retrieval quality and prompt discipline still matter for reliable outputs." },
+        { icon: "⚖️", head: "Important caveat", body: "A larger context window increases field of view, not permanent memory." }
+      ]
+    },
+    {
+      layout: "default",
+      eyebrow: "Specificity problem",
+      title: "The Problem With Generic AI",
+      visual: {
+        title: "General vs workflow-specific",
+        lines: [
+          "Generic output can sound good but still miss local process, local terminology, and safe action boundaries"
+        ]
+      },
+      items: [
+        { icon: "❓", head: "Core question", body: "How do we make AI specific enough to support real school workflows?" }
+      ]
+    },
+    {
+      layout: "default",
+      eyebrow: "Specificity levers",
+      title: "Three Ways to Make AI More Specific",
+      visual: {
+        title: "Use these together, not in isolation",
+        lines: ["Prompting = instructions, RAG = knowledge, Fine-tuning = behavior"]
+      },
+      items: [
+        { icon: "1", head: "Prompting", body: "Give clear runtime instructions: task, constraints, output format, and quality expectations." },
+        { icon: "2", head: "Retrieval / RAG", body: "Give trusted knowledge at runtime by retrieving relevant docs, records, or system data into context." },
+        { icon: "3", head: "Fine-tuning", body: "Teach repeated behavioral patterns across many examples when prompting alone is not consistent enough." }
+      ]
+    },
+    {
+      layout: "default",
+      eyebrow: "Retrieval",
+      title: "RAG: Open-Book AI",
+      visual: {
+        title: "RAG flow",
+        lines: [
+          "Question -> trusted sources -> retrieved context -> model answer"
+        ],
+        imageSrc: "assets/images/rag-flow.svg",
+        imageAlt: "RAG open-book flow"
+      },
+      items: [
+        { icon: "📂", head: "Trusted sources", body: "PowerSchool documentation, district procedures, internal FAQs, support notes, training guides, and policy docs." },
+        { icon: "📖", head: "Analogy", body: "RAG is like giving AI an open-book test before it answers." }
+      ]
+    },
+    {
+      layout: "default",
+      eyebrow: "System design",
+      title: "How an LLM Gets Retrieval Ability",
+      visual: {
+        title: "Retrieval wrapper pattern",
+        lines: [
+          "User asks -> system searches -> system ranks -> system injects context -> LLM answers"
+        ],
+        chips: ["Keyword search", "Vector search", "Hybrid search", "Database lookup", "API lookup"],
+        imageSrc: "assets/images/rag-flow.svg",
+        imageAlt: "Retrieval system around LLM"
+      },
+      items: [
+        { icon: "🧱", head: "Core idea", body: "RAG is a system around the model that finds the right information at the right time." }
+      ]
+    },
+    {
+      layout: "default",
+      eyebrow: "Training behavior",
+      title: "Fine-Tuning: Training Behavior",
+      visual: {
+        title: "Training ladder",
+        lines: [
+          "Pre-training: broad capability",
+          "Fine-tuning: behavior adjustment for repeated patterns",
+          "Prompting + RAG: runtime direction and knowledge"
+        ],
+        imageSrc: "assets/images/fine-tuning-ladder.svg",
+        imageAlt: "Fine-tuning comparison ladder"
+      },
+      items: [
+        { icon: "✅", head: "Good fine-tuning use cases", body: "Classification, routing, structured extraction, and consistent response style." },
+        { icon: "⚠️", head: "Not ideal for fine-tuning", body: "Live student data, changing configuration facts, or replacing permissions and controls." }
+      ]
+    },
+    {
+      layout: "default",
+      eyebrow: "Trust gate",
+      title: "Human-in-the-Loop: The Trust Gate",
+      visual: {
+        title: "Deliberate review checkpoint",
+        chips: ["Low confidence", "Missing info", "Sensitive action", "Record impact", "Policy requires approval", "External communication"],
+        imageSrc: "assets/images/hitl-gate.svg",
+        imageAlt: "Human review trust gate"
+      },
+      items: [
+        { icon: "👤", head: "Key clarification", body: "AI does not instinctively decide to escalate. The surrounding workflow and rules tell it when to stop." },
+        { icon: "🛡️", head: "Outcome", body: "Human review keeps AI useful without making it reckless." }
+      ]
+    },
+    {
+      layout: "default",
+      eyebrow: "Composition",
+      title: "Agent: AI With a Job",
+      visual: {
+        title: "Agent loop",
+        lines: [
+          "Goal -> context/tools -> reasoning -> draft action -> review"
+        ],
+        imageSrc: "assets/images/agent-workflow-loop.svg",
+        imageAlt: "Agent loop concept"
+      },
+      items: [
+        { icon: "💬", head: "Chatbot vs agent", body: "A chatbot answers; an agent works through a task with steps, tools, and explicit stopping points." }
+      ]
+    },
+    {
+      layout: "default",
+      eyebrow: "Process",
+      title: "Workflow: The Path Work Takes",
+      visual: {
+        title: "Deterministic + probabilistic together",
+        lines: [
+          "Deterministic steps: fixed rules, validations, routing, and system actions",
+          "Probabilistic LLM steps: infer intent, summarize unstructured input, draft responses, suggest policy-grounded next steps"
+        ],
+        imageSrc: "assets/images/agent-workflow-loop.svg",
+        imageAlt: "Workflow path concept"
+      },
+      items: [
+        { icon: "⚙️", head: "Deterministic automation", body: "Great for predictable rules: field checks, status transitions, and known routing logic." },
+        { icon: "🧠", head: "Probabilistic AI", body: "Useful for language-heavy judgment: intent inference, extracting missing info, and drafting from unstructured context." },
+        { icon: "🔍", head: "Design principle", body: "Use deterministic controls around probabilistic model steps so outputs are useful but still governed." }
+      ]
+    },
+    {
+      layout: "default",
+      eyebrow: "Tooling",
+      title: "n8n: Where the Workflow Becomes Visible",
+      visual: {
+        title: "Visual canvas",
+        lines: ["n8n connects triggers, data, AI steps, logic, approvals, integrations, and outputs in one inspectable flow."],
+        imageSrc: "assets/images/n8n-canvas-placeholder.svg",
+        imageAlt: "n8n-style workflow canvas illustration"
+      },
+      items: [
+        { icon: "🧭", head: "Why this matters", body: "n8n turns invisible process into a visible canvas so teams can inspect and improve each step." }
+      ]
+    },
+    {
+      layout: "default",
+      eyebrow: "Guardrails",
+      title: "Safety Before We Build",
+      visual: {
+        title: "Workshop boundaries",
+        chips: [
+          "Use sample data",
+          "No student PII",
+          "No real SIS credentials",
+          "Start read-only",
+          "Review before sending",
+          "Review before record changes"
+        ]
+      },
+      items: [
+        { icon: "🔐", head: "Security is design, not cleanup", body: "Good workflow habits start at design time, not after automation is already in place." }
+      ]
+    },
+    {
+      layout: "default",
+      eyebrow: "Lab transition",
+      title: "Into the Lab",
+      subtitle: "workflow.psug.pro",
+      visual: {
+        title: "Lab sequence",
+        lines: ["Log in -> inspect canvas -> run example -> observe first agent shape"]
+      },
+      items: [
+        { icon: "🌱", head: "Expectation", body: "The goal is understanding and confidence, not perfection in one session." }
+      ]
+    },
+    {
+      layout: "default",
+      eyebrow: "Lab anchor example",
+      title: "First Build: School Request Helper",
+      visual: {
+        title: "Starter pattern",
+        lines: [
+          "Parent asks about enrollment forms with no response",
+          "Agent classifies topic, identifies missing info, drafts response, recommends next step, then stops for human review"
+        ],
+        imageSrc: "assets/images/n8n-canvas-placeholder.svg",
+        imageAlt: "Starter workflow shape"
+      },
+      items: [
+        { icon: "🧩", head: "Why this example works", body: "It teaches a reusable pattern that scales into more advanced workflows." }
+      ]
+    },
+    {
+      layout: "default",
+      eyebrow: "Transfer",
+      title: "From One Example to PowerSchool Workflows",
+      visual: {
+        title: "Reusable pattern map",
+        chips: ["Enrollment follow-up", "Email triage", "Portal support", "Attendance outreach", "Data cleanup", "Reporting prep", "Teacher support"],
+        imageSrc: "assets/images/transfer-map.svg",
+        imageAlt: "One pattern applied to many school workflows"
+      },
+      items: [
+        { icon: "🔄", head: "Core transfer insight", body: "Once teams understand the shape, they start seeing viable workflow candidates everywhere." }
+      ]
+    },
+    {
+      layout: "default",
+      eyebrow: "Adoption",
+      title: "Choosing a Good First Workflow",
+      visual: {
+        title: "Start criteria",
+        chips: ["Repeated often", "Easy to describe", "Low risk", "Clear inputs", "Useful as draft/summary", "Human review included"],
+        lines: [
+          "Avoid first: discipline decisions, health data, special education decisions, auto record updates, unclear approvals"
+        ]
+      },
+      items: [
+        { icon: "✅", head: "Practical rule", body: "Start where value is obvious and risk is manageable, then expand after controls are proven." }
+      ]
+    },
+    {
+      layout: "title",
+      eyebrow: "Closing",
+      title: "Start with one repeated task",
+      subtitle: "Teach the system the context. Keep the human in control.",
+      visual: {
+        title: "Final mental model",
+        lines: [
+          "AI becomes useful when it has context, a job, trusted information, safe boundaries, workflow placement, and human review.",
+          "Web: psug.pro  ·  Contact: kaelon@psug.pro"
+        ],
+        chips: ["Questions", "Follow-up examples", "Implementation discussions"]
+      }
+    }
+  ];
+
+  const viewport = document.getElementById('slideViewport');
+
+  SLIDES.forEach((s, si) => {
+    const isTitle = s.layout === 'title';
+    const el = document.createElement('div');
+    el.className = 'slide' + (isTitle ? ' title-slide' : '');
+    el.dataset.slide = si;
+
+    let revealIdx = 0;
+    let h = '<div class="slide-heading">';
+    if (s.eyebrow) h += '<div class="slide-eyebrow">' + esc(s.eyebrow) + '</div>';
+    h += '<h1 class="slide-title">' + esc(s.title) + '</h1>';
+    if (s.subtitle) h += '<p class="slide-subtitle">' + esc(s.subtitle) + '</p>';
+    h += '</div>';
+
+    if (s.visual) {
+      h += buildVisual(s.visual, revealIdx);
+      revealIdx += 1;
+    }
+
+    if (Array.isArray(s.items) && s.items.length) {
+      h += '<div class="slide-body">';
+      s.items.forEach((item) => {
+        h += '<div class="slide-item" data-item="' + revealIdx + '">';
+        h += '<div class="item-icon">' + esc(item.icon || '') + '</div>';
+        h += '<div class="item-content"><h3>' + esc(item.head || '') + '</h3><p>' + esc(item.body || '') + '</p></div>';
+        h += '</div>';
+        revealIdx += 1;
+      });
+      h += '</div>';
+    }
+
+    el.innerHTML = h;
+    viewport.appendChild(el);
+  });
+
+  function buildVisual(v, idx){
+    const hasImage = !!v.imageSrc;
+    let h = '<div class="visual-card' + (hasImage ? ' has-image' : '') + '" data-item="' + idx + '">';
+    if (v.title) h += '<div class="visual-title">' + esc(v.title) + '</div>';
+    if (v.imageSrc) {
+      h += '<div class="visual-image-wrap">';
+      h += '<img class="visual-image" src="' + escAttr(v.imageSrc) + '" alt="' + escAttr(v.imageAlt || 'visual') + '" />';
+      if (v.imageCaption) h += '<div class="visual-image-caption">' + esc(v.imageCaption) + '</div>';
+      h += '</div>';
+    }
+    if (Array.isArray(v.lines) && v.lines.length) {
+      h += '<div class="visual-lines">';
+      v.lines.forEach((line) => {
+        h += '<div class="visual-line">' + esc(line) + '</div>';
+      });
+      h += '</div>';
+    }
+    if (Array.isArray(v.chips) && v.chips.length) {
+      h += '<div class="visual-chips">';
+      v.chips.forEach((chip) => {
+        h += '<div class="visual-chip">' + esc(chip) + '</div>';
+      });
+      h += '</div>';
+    }
+    h += '</div>';
+    return h;
+  }
+
+  function esc(str){
+    return String(str)
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;');
+  }
+
+  function escAttr(str){
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
+  const slides = document.querySelectorAll('.slide');
+  const totalSlides = slides.length;
+  let currentSlide = 0;
+  let currentItem = -1;
+  let transitioning = false;
+
+  const counterCurrent = document.getElementById('counterCurrent');
+  const counterTotal = document.getElementById('counterTotal');
+  const progressFill = document.getElementById('progressFill');
+  counterTotal.textContent = String(totalSlides).padStart(2,'0');
+
+  function getItems(si){
+    return slides[si].querySelectorAll('.visual-card, .slide-item');
+  }
+
+  function render(){
+    slides.forEach((s, i) => s.classList.toggle('active', i === currentSlide));
+    const items = getItems(currentSlide);
+    items.forEach((item, i) => {
+      item.classList.remove('revealed','current');
+      if (i <= currentItem) {
+        item.classList.add('revealed');
+        if (i === currentItem) item.classList.add('current');
+      }
+    });
+    counterCurrent.textContent = String(currentSlide + 1).padStart(2,'0');
+    const slideProgress = currentSlide / totalSlides;
+    const itemProgress = items.length > 0 ? ((currentItem + 1) / (items.length + 1)) / totalSlides : 0;
+    progressFill.style.width = ((slideProgress + itemProgress) * 100) + '%';
+  }
+
+  function next(){
+    if (transitioning) return;
+    const items = getItems(currentSlide);
+    if (currentItem < items.length - 1) {
+      currentItem += 1;
+      render();
+      return;
+    }
+    if (currentSlide < totalSlides - 1) {
+      transitioning = true;
+      currentSlide += 1;
+      currentItem = -1;
+      render();
+      setTimeout(() => { transitioning = false; }, 500);
+    }
+  }
+
+  function prev(){
+    if (transitioning) return;
+    if (currentItem >= 0) {
+      currentItem -= 1;
+      render();
+      return;
+    }
+    if (currentSlide > 0) {
+      transitioning = true;
+      currentSlide -= 1;
+      currentItem = getItems(currentSlide).length - 1;
+      render();
+      setTimeout(() => { transitioning = false; }, 500);
+    }
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown' || e.key === ' ' || e.key === 'ArrowRight') { e.preventDefault(); next(); }
+    else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
+  });
+  document.getElementById('btnNext').addEventListener('click', next);
+  document.getElementById('btnPrev').addEventListener('click', prev);
+
+  let touchStartY = 0;
+  document.addEventListener('touchstart', (e) => { touchStartY = e.touches[0].clientY; }, { passive: true });
+  document.addEventListener('touchend', (e) => {
+    const dy = touchStartY - e.changedTouches[0].clientY;
+    if (Math.abs(dy) > 40) dy > 0 ? next() : prev();
+  }, { passive: true });
+
+  render();
+
+  const themeStorageKey = 'psug-se26-theme-preference';
+  const html = document.documentElement;
+  const storedTheme = localStorage.getItem(themeStorageKey);
+  const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const initialTheme = (storedTheme === 'dark' || storedTheme === 'light') ? storedTheme : (systemPrefersDark ? 'dark' : 'light');
+  html.setAttribute('data-theme', initialTheme);
+  document.getElementById('themeToggle').addEventListener('click', () => {
+    const nextTheme = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', nextTheme);
+    localStorage.setItem(themeStorageKey, nextTheme);
+  });
+})();
+</script>
+</body>
+</html>

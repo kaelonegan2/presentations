@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" role="img" aria-label="Agent and workflow loop">
+  <rect width="1200" height="700" fill="#0b1220"/>
+  <text x="80" y="90" fill="#e5e7eb" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="700">Agent + Workflow Loop</text>
+  <g font-family="Inter, Arial, sans-serif" font-size="24" fill="#e5e7eb" text-anchor="middle">
+    <circle cx="260" cy="350" r="90" fill="#1f2937"/><text x="260" y="356">Goal</text>
+    <circle cx="500" cy="220" r="90" fill="#1f2937"/><text x="500" y="226">Context</text>
+    <circle cx="760" cy="220" r="90" fill="#0b3a4f"/><text x="760" y="226">Tool Use</text>
+    <circle cx="940" cy="350" r="90" fill="#1f2937"/><text x="940" y="356">Draft</text>
+    <circle cx="760" cy="500" r="90" fill="#1f2937"/><text x="760" y="506">Review</text>
+    <circle cx="500" cy="500" r="90" fill="#1f2937"/><text x="500" y="506">Next Step</text>
+  </g>
+  <g stroke="#38bdf8" stroke-width="5" fill="none" marker-end="url(#arrow)">
+    <defs>
+      <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+        <polygon points="0 0, 6 3, 0 6" fill="#38bdf8"/>
+      </marker>
+    </defs>
+    <path d="M345 310 L430 255"/>
+    <path d="M590 220 L670 220"/>
+    <path d="M845 255 L900 310"/>
+    <path d="M900 390 L835 460"/>
+    <path d="M670 500 L590 500"/>
+    <path d="M430 500 L320 400"/>
+  </g>
+</svg>

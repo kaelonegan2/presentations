@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" role="img" aria-label="One workflow pattern many school use cases">
+  <rect width="1200" height="700" fill="#0b1220"/>
+  <text x="70" y="90" fill="#e5e7eb" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="700">One Pattern, Many School Workflows</text>
+  <g font-family="Inter, Arial, sans-serif" fill="#e5e7eb">
+    <rect x="440" y="270" width="320" height="140" rx="18" fill="#0b3a4f"/>
+    <text x="500" y="332" font-size="26">Request -> AI -> Review</text>
+  </g>
+  <g fill="#1f2937" stroke="#334155">
+    <rect x="120" y="120" width="260" height="90" rx="14"/><rect x="120" y="490" width="260" height="90" rx="14"/>
+    <rect x="820" y="120" width="260" height="90" rx="14"/><rect x="820" y="490" width="260" height="90" rx="14"/>
+    <rect x="120" y="305" width="260" height="90" rx="14"/><rect x="820" y="305" width="260" height="90" rx="14"/>
+  </g>
+  <g font-family="Inter, Arial, sans-serif" font-size="22" fill="#cbd5e1">
+    <text x="145" y="174">Enrollment follow-up</text>
+    <text x="145" y="359">Inbox triage</text>
+    <text x="145" y="544">Attendance outreach</text>
+    <text x="845" y="174">Portal support</text>
+    <text x="845" y="359">Data cleanup prep</text>
+    <text x="845" y="544">Reporting prep</text>
+  </g>
+  <g stroke="#38bdf8" stroke-width="4" fill="none">
+    <path d="M380 165 L440 290"/><path d="M380 350 L440 340"/><path d="M380 535 L440 390"/>
+    <path d="M760 290 L820 165"/><path d="M760 340 L820 350"/><path d="M760 390 L820 535"/>
+  </g>
+</svg>

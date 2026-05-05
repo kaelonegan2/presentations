@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" role="img" aria-label="Token prediction concept">
+  <rect width="1200" height="700" fill="#0f172a"/>
+  <g font-family="Inter, Arial, sans-serif" fill="#e2e8f0">
+    <text x="90" y="110" font-size="34" font-weight="700">AI Is Next-Token Prediction at Scale</text>
+    <rect x="90" y="170" width="460" height="140" rx="18" fill="#1e293b" stroke="#334155"/>
+    <text x="115" y="225" font-size="24">The parent submitted the</text>
+    <text x="115" y="262" font-size="24">enrollment form and needs ____</text>
+    <rect x="640" y="170" width="470" height="340" rx="18" fill="#111827" stroke="#334155"/>
+    <text x="675" y="225" font-size="24" fill="#93c5fd">Candidate next tokens</text>
+    <rect x="675" y="255" width="250" height="54" rx="12" fill="#0b3a4f"/><text x="695" y="290" font-size="22">confirmation</text>
+    <rect x="675" y="322" width="180" height="54" rx="12" fill="#1f2937"/><text x="695" y="357" font-size="22">help</text>
+    <rect x="675" y="389" width="140" height="54" rx="12" fill="#1f2937"/><text x="695" y="424" font-size="22">to</text>
+    <text x="675" y="482" font-size="20" fill="#9ca3af">Highest probability token becomes the next output.</text>
+  </g>
+  <path d="M560 240 C610 240, 620 240, 640 240" stroke="#38bdf8" stroke-width="5" fill="none"/>
+  <polygon points="640,240 626,232 626,248" fill="#38bdf8"/>
+</svg>

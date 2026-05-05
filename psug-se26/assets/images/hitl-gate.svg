@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" role="img" aria-label="Human in the loop trust gate">
+  <rect width="1200" height="700" fill="#111827"/>
+  <text x="80" y="90" fill="#e5e7eb" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="700">Human-in-the-Loop Trust Gate</text>
+  <g font-family="Inter, Arial, sans-serif">
+    <rect x="90" y="220" width="360" height="180" rx="18" fill="#1f2937"/>
+    <text x="130" y="285" fill="#93c5fd" font-size="26">AI Draft + Recommendation</text>
+    <text x="130" y="335" fill="#cbd5e1" font-size="20">Confidence, evidence, and next step</text>
+
+    <rect x="520" y="180" width="220" height="260" rx="18" fill="#0b3a4f"/>
+    <text x="565" y="320" fill="#e5e7eb" font-size="28">Review Gate</text>
+
+    <rect x="810" y="140" width="300" height="120" rx="16" fill="#1f2937"/>
+    <text x="845" y="210" fill="#5eead4" font-size="24">Approve + Send</text>
+    <rect x="810" y="290" width="300" height="120" rx="16" fill="#1f2937"/>
+    <text x="845" y="360" fill="#fbbf24" font-size="24">Revise + Clarify</text>
+    <rect x="810" y="440" width="300" height="120" rx="16" fill="#1f2937"/>
+    <text x="845" y="510" fill="#f87171" font-size="24">Escalate</text>
+  </g>
+  <g stroke="#38bdf8" stroke-width="5" fill="none">
+    <path d="M450 310 L520 310"/>
+    <path d="M740 250 L810 200"/>
+    <path d="M740 310 L810 350"/>
+    <path d="M740 370 L810 500"/>
+  </g>
+</svg>

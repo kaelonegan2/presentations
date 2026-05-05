@@ -16,4 +16,5 @@ This repository hosts public, review-ready presentations generated and managed f
 - A publish command exports and syncs the selected presentation folder here.
 
 ## Available presentations
+- [psug-se26](./psug-se26/)
 - [solo](./solo/)

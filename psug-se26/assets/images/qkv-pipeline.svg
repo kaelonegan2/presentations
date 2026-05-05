@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" role="img" aria-label="QKV attention pipeline">
+  <rect width="1200" height="700" fill="#111827"/>
+  <g font-family="Inter, Arial, sans-serif" fill="#e5e7eb">
+    <text x="80" y="95" font-size="34" font-weight="700">How Attention Computes Relevance</text>
+    <rect x="80" y="160" width="220" height="90" rx="14" fill="#1f2937"/><text x="120" y="214" font-size="25">Tokens</text>
+    <rect x="350" y="160" width="220" height="90" rx="14" fill="#1f2937"/><text x="373" y="214" font-size="25">Embeddings</text>
+    <rect x="620" y="120" width="180" height="72" rx="12" fill="#0b3a4f"/><text x="688" y="165" text-anchor="middle" font-size="22">Q</text>
+    <rect x="620" y="212" width="180" height="72" rx="12" fill="#0b3a4f"/><text x="688" y="257" text-anchor="middle" font-size="22">K</text>
+    <rect x="620" y="304" width="180" height="72" rx="12" fill="#0b3a4f"/><text x="688" y="349" text-anchor="middle" font-size="22">V</text>
+    <rect x="860" y="190" width="250" height="90" rx="14" fill="#1f2937"/><text x="905" y="244" font-size="24">Scores (Q·K)</text>
+    <rect x="860" y="330" width="250" height="90" rx="14" fill="#1f2937"/><text x="884" y="384" font-size="24">Weighted V</text>
+    <text x="80" y="610" font-size="22" fill="#9ca3af">Plain English: compare what each token needs (Q) with what others provide (K), then blend useful information (V).</text>
+  </g>
+  <g stroke="#38bdf8" stroke-width="4" fill="none">
+    <path d="M300 205 L350 205"/>
+    <path d="M570 205 L620 155"/>
+    <path d="M570 205 L620 247"/>
+    <path d="M570 205 L620 339"/>
+    <path d="M800 247 L860 235"/>
+    <path d="M985 280 L985 330"/>
+  </g>
+</svg>

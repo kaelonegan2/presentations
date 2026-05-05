@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" role="img" aria-label="Transformer attention sentence arcs">
+  <rect width="1200" height="700" fill="#0b1020"/>
+  <text x="80" y="110" fill="#dbeafe" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="700">Transformer Relationships in One Sentence</text>
+  <g font-family="Inter, Arial, sans-serif" font-size="36" fill="#e2e8f0">
+    <text x="80" y="340">The</text>
+    <text x="165" y="340">student</text>
+    <text x="325" y="340">submitted</text>
+    <text x="520" y="340">the</text>
+    <text x="605" y="340" fill="#93c5fd">form</text>
+    <text x="735" y="340">, but</text>
+    <text x="860" y="340" fill="#5eead4">it</text>
+    <text x="915" y="340">was</text>
+    <text x="995" y="340">incomplete.</text>
+  </g>
+  <path d="M878 302 C830 210, 740 210, 662 304" fill="none" stroke="#5eead4" stroke-width="6"/>
+  <path d="M1045 302 C920 170, 760 160, 642 304" fill="none" stroke="#93c5fd" stroke-width="4" opacity="0.7"/>
+  <text x="830" y="205" fill="#5eead4" font-family="Inter, Arial, sans-serif" font-size="24">strongest link</text>
+  <text x="830" y="160" fill="#93c5fd" font-family="Inter, Arial, sans-serif" font-size="20">supporting relevance</text>
+</svg>

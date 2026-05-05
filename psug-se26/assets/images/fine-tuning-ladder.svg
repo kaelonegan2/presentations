@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" role="img" aria-label="Pre-training, fine-tuning, prompting and RAG ladder">
+  <rect width="1200" height="700" fill="#0f172a"/>
+  <text x="80" y="90" fill="#e2e8f0" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="700">Specificity Ladder</text>
+  <g font-family="Inter, Arial, sans-serif" fill="#e5e7eb" font-size="24">
+    <rect x="120" y="180" width="960" height="92" rx="14" fill="#1f2937"/><text x="160" y="235">Pre-training: broad language capability</text>
+    <rect x="120" y="300" width="960" height="92" rx="14" fill="#0b3a4f"/><text x="160" y="355">Fine-tuning: train for repeated behavior patterns</text>
+    <rect x="120" y="420" width="470" height="92" rx="14" fill="#1f2937"/><text x="150" y="475">Prompting: runtime instructions</text>
+    <rect x="610" y="420" width="470" height="92" rx="14" fill="#1f2937"/><text x="640" y="475">RAG: runtime knowledge retrieval</text>
+  </g>
+  <text x="120" y="590" fill="#94a3b8" font-family="Inter, Arial, sans-serif" font-size="22">Fine-tuning teaches behavior. RAG provides knowledge. Prompting sets task intent.</text>
+</svg>
